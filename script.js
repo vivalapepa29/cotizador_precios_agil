@@ -1,7 +1,9 @@
 document.getElementById("productForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const productName = document.getElementById("productName").value.toUpperCase();
+  const productName = document
+    .getElementById("productName")
+    .value.toUpperCase();
   const priceInput = document.getElementById("price").value;
   const discountInput = document.getElementById("discount").value;
   const stock = document.querySelector('input[name="stock"]:checked');
@@ -10,9 +12,12 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
   // Preparar el resumen
   let summaryText = `• ${productName} ➡️ `;
 
-  // Verificar si el nombre del producto contiene "ALTERNATIVA"
-  if (productName.includes("ALTERNATIVA")) {
-    summaryText = `• ${productName.replace("ALTERNATIVA", "💡ALTERNATIVA💡")} ➡️ `;
+  // Verificar si el nombre del producto contiene "ALTERNATIVA", "alt" o "alter"
+  if (/ALTERNATIVA|alt|alter/i.test(productName)) {
+    summaryText = `• ${productName.replace(
+      /ALTERNATIVA|alt|alter/gi,
+      "💡ALTERNATIVA💡"
+    )} ➡️ `;
   }
 
   if (stock && stock.value === "no") {
@@ -20,7 +25,9 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     // Deshabilitar campos
     document.getElementById("price").disabled = true;
     document.getElementById("discount").disabled = true;
-    document.querySelectorAll('input[name="unit"]').forEach((input) => (input.disabled = true));
+    document
+      .querySelectorAll('input[name="unit"]')
+      .forEach((input) => (input.disabled = true));
   } else {
     const price = parseFloat(priceInput.replace(",", ".")) || 0; // Aceptar coma como separador decimal
     const discount = parseFloat(discountInput) || 0;
@@ -35,13 +42,19 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
 
   // Limpiar el formulario
   document.getElementById("productForm").reset();
-  document.querySelectorAll('input[name="stock"]').forEach((input) => (input.checked = false));
-  document.querySelectorAll('input[name="unit"]').forEach((input) => (input.checked = false));
+  document
+    .querySelectorAll('input[name="stock"]')
+    .forEach((input) => (input.checked = false));
+  document
+    .querySelectorAll('input[name="unit"]')
+    .forEach((input) => (input.checked = false));
   document.getElementById("productName").focus();
   // Habilitar campos nuevamente
   document.getElementById("price").disabled = false;
   document.getElementById("discount").disabled = false;
-  document.querySelectorAll('input[name="unit"]').forEach((input) => (input.disabled = false));
+  document
+    .querySelectorAll('input[name="unit"]')
+    .forEach((input) => (input.disabled = false));
 });
 
 // Función para seleccionar el radiobutton de unidad según el nombre del producto
@@ -49,25 +62,54 @@ document.getElementById("productName").addEventListener("input", function () {
   const productName = this.value.toLowerCase(); // Convertir a minúsculas para evitar problemas de mayúsculas/minúsculas
 
   // Palabras clave para €/m
-  const metroKeywords = ["tubo", "tub", "pds", "perfrisa", "pasamanos", "pasamano", "iso", "conduccion", "cond", "presion"];
-  
+  const metroKeywords = [
+    "tubo",
+    "tub",
+    "pds",
+    "perfrisa",
+    "pasamanos",
+    "pasamano",
+    "iso",
+    "conduccion",
+    "cond",
+    "presion",
+  ];
+
   // Palabras clave para €/kg
   const kiloKeywords = [
-    "chapa", "viga", "angulo", "pletina", "simple t", "redondo", "cial", 
-    "liso", "calibrado", "cuadrado", "mac", "presilla", "placa", "anclaje"
+    "chapa",
+    "viga",
+    "angulo",
+    "pletina",
+    "simple t",
+    "redondo",
+    "cial",
+    "liso",
+    "calibrado",
+    "cuadrado",
+    "mac",
+    "presilla",
+    "placa",
+    "anclaje",
   ];
-  
+
   // **Palabras clave para m²**
   const squareMeterKeywords = ["mallazo"]; // Aquí puedes añadir más palabras clave en el futuro
 
   // Comprobar si el nombre del producto contiene alguna palabra clave de €/m
-  const isMetroProduct = metroKeywords.some(keyword => productName.includes(keyword));
+  const isMetroProduct = metroKeywords.some((keyword) =>
+    productName.includes(keyword)
+  );
 
   // Comprobar si el nombre del producto contiene alguna palabra clave de €/kg
-  const isKiloProduct = kiloKeywords.some(keyword => productName.includes(keyword));
-  
+  const isKiloProduct = kiloKeywords.some((keyword) =>
+    productName.includes(keyword)
+  );
+
   // Comprobar si el nombre del producto contiene alguna palabra clave de m²
-  const isSquareMeterProduct = squareMeterKeywords.some(keyword => productName.includes(keyword));
+  const isSquareMeterProduct = squareMeterKeywords.some((keyword) =>
+    productName.includes(keyword)
+  );
 
   if (isSquareMeterProduct) {
     document.querySelector('input[name="unit"][value="m²"]').checked = true;
@@ -99,7 +141,8 @@ document.getElementById("copyButton").addEventListener("click", function () {
 // Añadir evento para habilitar/deshabilitar campos según stock
 document.querySelectorAll('input[name="stock"]').forEach((input) => {
   input.addEventListener("change", () => {
-    const isNoStock = document.querySelector('input[name="stock"]:checked').value === "no";
+    const isNoStock =
+      document.querySelector('input[name="stock"]:checked').value === "no";
     document.getElementById("price").disabled = isNoStock;
     document.getElementById("discount").disabled = isNoStock;
     document.querySelectorAll('input[name="unit"]').forEach((unitInput) => {
@@ -121,11 +164,15 @@ document.getElementById("price").addEventListener("keydown", function (e) {
       if (!isNaN(result)) {
         this.value = result.toFixed(3); // Formatear a 3 decimales
       } else {
-        alert("Entrada inválida, por favor introduce una expresión matemática válida.");
+        alert(
+          "Entrada inválida, por favor introduce una expresión matemática válida."
+        );
       }
     } catch (error) {
       console.error("Error al evaluar la expresión: ", error);
-      alert("Entrada inválida, por favor introduce una expresión matemática válida.");
+      alert(
+        "Entrada inválida, por favor introduce una expresión matemática válida."
+      );
     }
   }
 });
