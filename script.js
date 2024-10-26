@@ -33,7 +33,7 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     const price = parseFloat(priceInput.replace(",", ".")) || 0; // Aceptar coma como separador decimal
     const discount = parseFloat(discountInput) || 0;
     const finalPrice = price - price * (discount / 100);
-    summaryText += `<strong>${finalPrice.toFixed(2)}</strong> ${unit.value} ✅`;
+    summaryText += `<strong>${finalPrice.toFixed(3)}</strong> ${unit.value} ✅`;
   }
 
   // Mostrar el resumen
