@@ -25,9 +25,7 @@
       </h2>
       <form id="productForm" class="space-y-4">
         <div>
-          <label for="productName" class="block font-bold"
-            >Nombre del producto</label
-          >
+          <label for="productName" class="block font-bold">Nombre del producto</label>
           <input
             type="text"
             id="productName"
@@ -37,6 +35,7 @@
             step="0.01"
           />
         </div>
+        
         <div class="flex space-x-4">
           <div class="w-1/2">
             <label for="price" class="block font-bold">Precio</label>
@@ -59,26 +58,32 @@
             />
           </div>
         </div>
+
         <div class="flex space-x-4">
           <div class="w-1/2">
             <label class="block font-bold">¿Hay stock?</label>
             <div
               class="border border-gray-300 rounded p-2 flex items-center justify-around"
             >
-              <label
-                ><input
+              <label>
+                <input
                   type="radio"
                   name="stock"
                   value="si"
                   class="mr-1"
                   checked
                 />
-                Sí</label
-              >
-              <label
-                ><input type="radio" name="stock" value="no" class="mr-1" />
-                No</label
-              >
+                Sí
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="stock"
+                  value="no"
+                  class="mr-1"
+                />
+                No
+              </label>
             </div>
           </div>
           
@@ -87,29 +92,47 @@
             <div
               class="border border-gray-300 rounded p-2 flex items-center justify-around"
             >
-              <label
-                ><input
+              <label>
+                <input
                   type="radio"
                   name="unit"
                   value="€/m"
                   class="mr-1"
                   checked
                 />
-                €/m</label
-              >
-              <label
-                ><input type="radio" name="unit" value="€/kg" class="mr-1" />
-                €/kg</label
-              >
-              <label
-                ><input type="radio" name="unit" value="m²" class="mr-1" />
-                m²</label
-              >
-              <label><input type="radio" name="unit" value="UD"> UD</label> <!-- Nuevo radiobutton -->
-              
+                €/m
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="unit"
+                  value="€/kg"
+                  class="mr-1"
+                />
+                €/kg
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="unit"
+                  value="m²"
+                  class="mr-1"
+                />
+                m²
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="unit"
+                  value="UD"
+                  class="mr-1"
+                />
+                UD
+              </label> <!-- Nuevo radiobutton -->
             </div>
           </div>
         </div>
+        
         <button
           type="submit"
           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
@@ -121,19 +144,20 @@
       <div id="summary" class="hidden mt-6">
         <h3 class="text-lg font-bold mb-2">Resumen:</h3>
         <div id="summaryContent"></div>
-        <button
-          id="copyButton"
-          class="mt-4 p-2 bg-gray-300 hover:bg-gray-400 rounded transition duration-200"
-        >
-          Copiar
-        </button>
-
-        <!-- <button
-          id="whatsappCopyButton"
-          class="bg-green-500 text-white p-2 mt-2 ml-2"
-        >
-          Copiar para WhatsApp
-        </button> -->
+        <div class="flex space-x-4 mt-4">
+          <button
+            id="copyButton"
+            class="p-2 bg-gray-300 hover:bg-gray-400 rounded transition duration-200"
+          >
+            Copiar
+          </button>
+          <button
+            id="whatsappCopyButton"
+            class="bg-green-500 text-white p-2 rounded hover:bg-green-600 transition duration-200"
+          >
+            Enviar por WhatsApp
+          </button>
+        </div>
       </div>
     </div>
     <script src="script.js"></script>

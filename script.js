@@ -22,6 +22,7 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
 
   if (stock && stock.value === "no") {
     summaryText += `¡NO STOCK! ❌`;
+    
     // Deshabilitar campos
     document.getElementById("price").disabled = true;
     document.getElementById("discount").disabled = true;
@@ -49,6 +50,7 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     .querySelectorAll('input[name="unit"]')
     .forEach((input) => (input.checked = false));
   document.getElementById("productName").focus();
+  
   // Habilitar campos nuevamente
   document.getElementById("price").disabled = false;
   document.getElementById("discount").disabled = false;
@@ -83,14 +85,25 @@ document.getElementById("productName").addEventListener("input", function () {
     "pletina",
     "simple t",
     "redondo",
+    "redondo calibrado",
+    "comercial",
+    "redondo comercial",
+    "red comercial",
+    "red cial",
+    "calibrado",
     "cial",
     "liso",
     "calibrado",
-    "cuadrado",
+    "cuadrado mac",
     "mac",
     "presilla",
     "placa",
     "anclaje",
+    "ipe",
+    "ipn",
+    "heb",
+    "hea",
+    "upn"
   ];
 
   // **Palabras clave para m²**
@@ -111,68 +124,48 @@ document.getElementById("productName").addEventListener("input", function () {
     productName.includes(keyword)
   );
 
-  if (isSquareMeterProduct) {
-    document.querySelector('input[name="unit"][value="m²"]').checked = true;
-  } else if (isMetroProduct) {
+  // Seleccionar la unidad correspondiente
+  if (isMetroProduct) {
     document.querySelector('input[name="unit"][value="€/m"]').checked = true;
   } else if (isKiloProduct) {
     document.querySelector('input[name="unit"][value="€/kg"]').checked = true;
+  } else if (isSquareMeterProduct) {
+    document.querySelector('input[name="unit"][value="m²"]').checked = true;
   }
 });
 
+// Función para copiar el resumen al portapapeles
 document.getElementById("copyButton").addEventListener("click", function () {
   const summaryContent = document.getElementById("summaryContent").innerText;
-
-  // Copiar al portapapeles
-  navigator.clipboard
-    .writeText(summaryContent)
-    .then(() => {
-      // Cambiar el texto del botón
-      this.innerText = "¡Copiado!";
-      setTimeout(() => {
-        this.innerText = "Copiar";
-      }, 2000); // Restablecer después de 2 segundos
-    })
-    .catch((err) => {
-      console.error("Error al copiar: ", err);
-    });
-});
-
-// Añadir evento para habilitar/deshabilitar campos según stock
-document.querySelectorAll('input[name="stock"]').forEach((input) => {
-  input.addEventListener("change", () => {
-    const isNoStock =
-      document.querySelector('input[name="stock"]:checked').value === "no";
-    document.getElementById("price").disabled = isNoStock;
-    document.getElementById("discount").disabled = isNoStock;
-    document.querySelectorAll('input[name="unit"]').forEach((unitInput) => {
-      unitInput.disabled = isNoStock;
-    });
+  navigator.clipboard.writeText(summaryContent).then(() => {
+    alert("Resumen copiado al portapapeles!");
   });
 });
 
-document.getElementById("price").addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    e.preventDefault(); // Evitar el comportamiento predeterminado de Tab
+// Función para enviar el resumen por WhatsApp
+document.getElementById("whatsappCopyButton").addEventListener("click", function () {
+  const summaryContent = document.getElementById("summaryContent").innerText;
+  const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+    summaryContent
+  )}`;
+  window.open(url, "_blank");
+});
 
-    // Evaluar la expresión ingresada
-    try {
-      const expression = this.value; // Obtener la expresión del input
-      const result = eval(expression.replace(",", ".")); // Evaluar y reemplazar coma por punto
-
-      // Verificar que el resultado sea un número y actualizar el input con el resultado formateado
-      if (!isNaN(result)) {
-        this.value = result.toFixed(3); // Formatear a 3 decimales
-      } else {
-        alert(
-          "Entrada inválida, por favor introduce una expresión matemática válida."
-        );
-      }
-    } catch (error) {
-      console.error("Error al evaluar la expresión: ", error);
-      alert(
-        "Entrada inválida, por favor introduce una expresión matemática válida."
-      );
+// Controlar el estado de los campos de Precio, Descuento y Unidad según el stock
+document.querySelectorAll('input[name="stock"]').forEach((input) => {
+  input.addEventListener("change", function () {
+    if (this.value === "no") {
+      document.getElementById("price").disabled = true;
+      document.getElementById("discount").disabled = true;
+      document.querySelectorAll('input[name="unit"]').forEach((unit) => {
+        unit.disabled = true;
+      });
+    } else {
+      document.getElementById("price").disabled = false;
+      document.getElementById("discount").disabled = false;
+      document.querySelectorAll('input[name="unit"]').forEach((unit) => {
+        unit.disabled = false;
+      });
     }
-  }
+  });
 });
