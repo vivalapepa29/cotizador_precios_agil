@@ -22,7 +22,7 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
 
   if (stock && stock.value === "no") {
     summaryText += `¡NO STOCK! ❌`;
-    
+
     // Deshabilitar campos
     document.getElementById("price").disabled = true;
     document.getElementById("discount").disabled = true;
@@ -38,7 +38,9 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
 
   // Mostrar el resumen
   const summaryContent = document.getElementById("summaryContent");
-  summaryContent.innerHTML += `<div>${summaryText}</div>`;
+  const summaryItem = document.createElement("div");
+  summaryItem.innerHTML = `${summaryText} <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="removeSummaryItem(this)">Borrar</button>`;
+  summaryContent.appendChild(summaryItem);
   document.getElementById("summary").classList.remove("hidden");
 
   // Limpiar el formulario
@@ -50,7 +52,7 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     .querySelectorAll('input[name="unit"]')
     .forEach((input) => (input.checked = false));
   document.getElementById("productName").focus();
-  
+
   // Habilitar campos nuevamente
   document.getElementById("price").disabled = false;
   document.getElementById("discount").disabled = false;
@@ -58,6 +60,11 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     .querySelectorAll('input[name="unit"]')
     .forEach((input) => (input.disabled = false));
 });
+
+// Función para eliminar un elemento del resumen
+function removeSummaryItem(button) {
+  button.parentElement.remove();
+}
 
 // Función para seleccionar el radiobutton de unidad según el nombre del producto
 document.getElementById("productName").addEventListener("input", function () {
@@ -103,7 +110,7 @@ document.getElementById("productName").addEventListener("input", function () {
     "ipn",
     "heb",
     "hea",
-    "upn"
+    "upn",
   ];
 
   // **Palabras clave para m²**
@@ -136,20 +143,35 @@ document.getElementById("productName").addEventListener("input", function () {
 
 // Función para copiar el resumen al portapapeles
 document.getElementById("copyButton").addEventListener("click", function () {
-  const summaryContent = document.getElementById("summaryContent").innerText;
-  navigator.clipboard.writeText(summaryContent).then(() => {
-    alert("Resumen copiado al portapapeles!");
-  });
+  const summaryTextOnly = Array.from(
+    document.querySelectorAll("#summaryContent div")
+  )
+    .map((div) => div.innerText.replace("Borrar", "").trim())
+    .join("\n");
+  navigator.clipboard.writeText(summaryTextOnly);
+
+  // Cambiar el texto del botón
+  const button = this;
+  button.textContent = "¡Copiado!";
+  setTimeout(() => {
+    button.textContent = "Copiar";
+  }, 2000);
 });
 
 // Función para enviar el resumen por WhatsApp
-document.getElementById("whatsappCopyButton").addEventListener("click", function () {
-  const summaryContent = document.getElementById("summaryContent").innerText;
-  const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-    summaryContent
-  )}`;
-  window.open(url, "_blank");
-});
+document
+  .getElementById("whatsappCopyButton")
+  .addEventListener("click", function () {
+    const summaryTextOnly = Array.from(
+      document.querySelectorAll("#summaryContent div")
+    )
+      .map((div) => div.innerText.replace("Borrar", "").trim())
+      .join("\n");
+    const whatsappLink = `https://wa.me/?text=${encodeURIComponent(
+      summaryTextOnly
+    )}`;
+    window.open(whatsappLink, "_blank");
+  });
 
 // Controlar el estado de los campos de Precio, Descuento y Unidad según el stock
 document.querySelectorAll('input[name="stock"]').forEach((input) => {
