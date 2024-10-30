@@ -32,16 +32,34 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
   } else {
     const price = parseFloat(priceInput.replace(",", ".")) || 0; // Aceptar coma como separador decimal
     const discount = parseFloat(discountInput) || 0;
-    const finalPrice = price - price * (discount / 100);
-    summaryText += `<strong>${finalPrice.toFixed(3)}</strong> ${unit.value} ✅`;
+    const finalPrice = (price - price * (discount / 100)).toFixed(3);
+    const formattedPrice = finalPrice.replace(".", ","); // Cambiar punto a coma
+    summaryText += `<strong>${formattedPrice}</strong> ${unit.value} ✅`;
   }
 
-  // Mostrar el resumen
+  // Crear el elemento de resumen
   const summaryContent = document.getElementById("summaryContent");
   const summaryItem = document.createElement("div");
-  summaryItem.innerHTML = `${summaryText} <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-1 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="removeSummaryItem(this)">Borrar</button>`;
+  summaryItem.classList.add("flex", "items-center", "justify-between", "mb-2");
+  summaryItem.innerHTML = `
+    <span>${summaryText}</span>
+    <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-2 py-1 ml-2">
+      Borrar
+    </button>
+  `;
+
+  // Añadir el nuevo resumen al contenido
   summaryContent.appendChild(summaryItem);
   document.getElementById("summary").classList.remove("hidden");
+
+  // Añadir evento al botón de borrar
+  summaryItem.querySelector("button").addEventListener("click", function () {
+    summaryContent.removeChild(summaryItem);
+    // Si no hay más elementos, ocultar el resumen
+    if (summaryContent.children.length === 0) {
+      document.getElementById("summary").classList.add("hidden");
+    }
+  });
 
   // Limpiar el formulario
   document.getElementById("productForm").reset();
@@ -60,11 +78,6 @@ document.getElementById("productForm").addEventListener("submit", function (e) {
     .querySelectorAll('input[name="unit"]')
     .forEach((input) => (input.disabled = false));
 });
-
-// Función para eliminar un elemento del resumen
-function removeSummaryItem(button) {
-  button.parentElement.remove();
-}
 
 // Función para seleccionar el radiobutton de unidad según el nombre del producto
 document.getElementById("productName").addEventListener("input", function () {
@@ -143,34 +156,33 @@ document.getElementById("productName").addEventListener("input", function () {
 
 // Función para copiar el resumen al portapapeles
 document.getElementById("copyButton").addEventListener("click", function () {
-  const summaryTextOnly = Array.from(
-    document.querySelectorAll("#summaryContent div")
+  const summaryContent = Array.from(
+    document.getElementById("summaryContent").children
   )
-    .map((div) => div.innerText.replace("Borrar", "").trim())
+    .map((item) => item.querySelector("span").innerText)
     .join("\n");
-  navigator.clipboard.writeText(summaryTextOnly);
-
-  // Cambiar el texto del botón
-  const button = this;
-  button.textContent = "¡Copiado!";
-  setTimeout(() => {
-    button.textContent = "Copiar";
-  }, 2000);
+  navigator.clipboard.writeText(summaryContent).then(() => {
+    const copyButton = document.getElementById("copyButton");
+    copyButton.textContent = "¡Copiado!";
+    setTimeout(() => {
+      copyButton.textContent = "Copiar";
+    }, 2000);
+  });
 });
 
 // Función para enviar el resumen por WhatsApp
 document
   .getElementById("whatsappCopyButton")
   .addEventListener("click", function () {
-    const summaryTextOnly = Array.from(
-      document.querySelectorAll("#summaryContent div")
+    const summaryContent = Array.from(
+      document.getElementById("summaryContent").children
     )
-      .map((div) => div.innerText.replace("Borrar", "").trim())
+      .map((item) => item.querySelector("span").innerText)
       .join("\n");
-    const whatsappLink = `https://wa.me/?text=${encodeURIComponent(
-      summaryTextOnly
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      summaryContent
     )}`;
-    window.open(whatsappLink, "_blank");
+    window.open(url, "_blank");
   });
 
 // Controlar el estado de los campos de Precio, Descuento y Unidad según el stock
